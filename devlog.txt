@@ -1,3 +1,7 @@
 Step 1: create visualizer
     - Helps with debugging
     - Easy way to get a grip of hex geometry & coordinates
+Step 2: Load tile data in a useful format
+    - Need to double-store information to answer two questions: "where is all the desert" and "what are the attributes of this tile"
+Step 3: Stitching pieces together
+    - Need to deal with rotation too
