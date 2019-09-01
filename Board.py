@@ -1,9 +1,8 @@
 from tkinter import Tk, Canvas
 from collections import defaultdict
 from copy import deepcopy
+import Hex
 import math
-
-# ToDo: Clean up namedtuples being duplicated
 
 class Board:
     cos60 = math.cos(math.radians(60))
