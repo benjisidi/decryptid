@@ -1,4 +1,4 @@
-from tkinter import Tk, Canvas
+from tkinter import Tk, Canvas, W
 from collections import defaultdict
 from copy import deepcopy
 import Hex
@@ -12,6 +12,7 @@ class Board:
         self.dims = dims
         self.hexWidth = self.dims['length']*(1+Board.cos60)
         self.hexHeight = self.dims['length'] * Board.sin60
+        self.showCoords = False
         self.origin = origin
         self.structures = structures
         self.terrainColors = {
@@ -81,6 +82,17 @@ class Board:
     def indexToCoords(self, col, row):
         return [self.origin['x'] + (col * self.hexWidth), self.origin['y'] + (row * self.hexHeight)]
 
+    def invertHexColor(self, hexCode):
+        # Grab hex digits, parse to int, invert (mod 255), convert back to hex, grab digits, pad with zeros as appropriate.
+        invertDigits = lambda digits: hex((255 - int(digits, 16)) % 255)[2:].zfill(2)
+        # Need to deal with 3-digit hex code shorthand
+        if (len(hexCode) == 4):
+            hexCode = f'#{hexCode[1]}{hexCode[1]}{hexCode[2]}{hexCode[2]}{hexCode[3]}{hexCode[3]}'
+        red = invertDigits(hexCode[1:3])
+        green = invertDigits(hexCode[3:5])
+        blue = invertDigits(hexCode[5:7])
+        return f'#{red}{green}{blue}'
+
     def drawStone(self, x, y, r, color, canvas):
         canvas.create_oval([x, y, x + 2*r, y + 2*r], fill=color, outline='#FFF')
 
@@ -113,12 +125,10 @@ class Board:
         canvas.create_polygon(points, outline=outlineColor, fill=fillColor, width=2)
         canvas.pack(fill="both", expand=True)
 
-
     def drawTile(self, x, y, col, row, canvas, length=False):
         if not length:
             length = self.dims['length']
         tile = self.getTile(col, row)
-        # outlineColor = '#FFF' if 'territory' not in tile else self.territoryColors[tile['territory']] 
         fillColor = self.terrainColors[tile['terrain']]
         self.drawHex(x, y, col, row, canvas, fillColor=fillColor)
         if ('structure' in tile):
@@ -127,26 +137,35 @@ class Board:
             territoryColor = self.territoryColors[tile['territory']]
             # ToDo: Eliminate magic numbers
             self.drawHex(x + 4, y + 7, col, row, canvas, outlineColor=territoryColor, width=2, length=self.dims['length']- 8)
+        if(self.showCoords):
+            canvas.create_text(x+2, y+7, anchor=W, text=f'{col}, {row}', fill=self.invertHexColor(fillColor))
+            canvas.pack(fill="both", expand=True)
 
-    def drawBoard(self, width=1280, height=720):
-        root = Tk()
-        c = Canvas(root, width=width, height=height)
-        c.pack(side="top", fill="both", expand=True)
-        
+    def toggleCoords(self, e):
+        self.showCoords = not self.showCoords
+        self.drawBoard(self.canvas)
+
+    def drawBoard(self, canvas):
+        canvas.delete("all")
         def drawCols(startIndex):
             for col in range(startIndex, self.dims['cols'], 2):
                 for row in range(startIndex, self.dims['rows'], 2):
-                    self.drawTile(*self.indexToCoords(col, row), col, row, c)
+                    self.drawTile(*self.indexToCoords(col, row), col, row, canvas)
         # Draw the even columns first
         drawCols(0)
         # Now draw the odd columns
         drawCols(1)
 
+    def show(self, width=1280, height=720):
+        root = Tk()
+        self.canvas = Canvas(root, width=width, height=height)
+        self.canvas.pack(side="top", fill="both", expand=True)
 
+        self.drawBoard(self.canvas)
 
         def quit_window(event):
             root.destroy()
-        # drawHex(100, 200, 80, c)
+        
         root.bind('<Escape>', quit_window)
+        root.bind('c', self.toggleCoords)
         root.mainloop()
-

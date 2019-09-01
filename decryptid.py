@@ -172,4 +172,4 @@ if __name__ == '__main__':
         'structures': structures,
         'origin': {'x': 100, 'y': 50}
     })
-    test.drawBoard()
+    test.show()
