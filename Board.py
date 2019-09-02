@@ -41,6 +41,7 @@ class Board:
         self.loadPieces(pieces, pieceOrder)
         for tileKey in structures:
             self.tiles[tileKey]['structure'] = structures[tileKey]
+        print(self.terrains)
 
     def rotatePiece(self, piece):
         flippedPiece = deepcopy(piece)

@@ -5,3 +5,12 @@ Step 2: Load tile data in a useful format
     - Need to double-store information to answer two questions: "where is all the desert" and "what are the attributes of this tile"
 Step 3: Stitching pieces together
     - Need to deal with rotation too
+Step 4: Creating a player
+    - Questions:
+        Does the player hold a board instance? 
+        Does the board hold player instances? (It certainly holds the information available to the players)
+            => just has to hold which colors are in the game
+        Does the player need to know where its own pieces on the board are (yes: it has to be able to give out non-duplicate information)
+        How will the player identify itself? (Color)
+        Strategy: asking another player vs investigating a hex (trading your own info for answers from all other players)
+        
