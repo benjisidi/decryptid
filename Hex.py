@@ -28,6 +28,7 @@ def getAbsolutes(tileCoords, relativeCoords):
 def getAdjacents(tileCoords, order=1):
     '''Get all order-adjacent tiles'''
     relativeCoords = [
+        [[0, 0]],
         # Coords of all one-adjacent tiles
         [*getAllSigns([0, 2], [1, 1])],
         # Coords of all two-adjacent tiles
@@ -35,14 +36,17 @@ def getAdjacents(tileCoords, order=1):
         # Coords of all three-adjacent tiles
         [*getAllSigns(*[[x ,x-6] for x in range(4)], [3, 1])]
     ]
-    return getAbsolutes(tileCoords, reduce(operator.add, [relativeCoords[i] for i in range(order)]))
+    return getAbsolutes(tileCoords, reduce(operator.add, [relativeCoords[i] for i in range(order + 1)], []))
 
+def getTileKey(col, row):
+    return f'{col}-{row}'
 
+def getTileCoords(key):
+    [x, y] = key.split('-')
+    return [int(x), int(y)]
 
-
-
-
-
+if __name__ == '__main__':
+    print(getAdjacents([2, 2], 1))
 
 
 # Probably won't need this

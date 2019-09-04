@@ -14,7 +14,17 @@ class Board:
         self.hexHeight = self.dims['length'] * Board.sin60
         self.showCoords = False
         self.origin = origin
-        self.structures = structures
+        # ToDo: switch from lists to sets for tilekeys to facilitate clue parsing
+        self.structureColors = {
+            'blue': set(),
+            'black': set(),
+            'green': set(),
+            'white': set()
+        }
+        self.structureTypes = {
+            'stone': set(),
+            'shack': set()
+        }
         self.terrainColors = {
             'desert': '#ebc034',
             'swamp': '#3d1254',
@@ -27,21 +37,29 @@ class Board:
             'cougar': '#F00'
         }
         self.terrains = {
-            'desert': [],
-            'forest': [],
-            'mountain': [],
-            'swamp': [],
-            'water': []
+            'desert': set(),
+            'forest': set(),
+            'mountain': set(),
+            'swamp': set(),
+            'water': set()
         }
         self.territories = {
-            'bear': [],
-            'cougar': []
+            'bear': set(),
+            'cougar': set()
         }
         self.tiles = {}
         self.loadPieces(pieces, pieceOrder)
         for tileKey in structures:
-            self.tiles[tileKey]['structure'] = structures[tileKey]
-        print(self.terrains)
+            [structureType, structureColor] = structures[tileKey]
+            self.tiles[tileKey]['structure'] = [structureType, structureColor]
+            self.structureColors[structureColor].add(tileKey)
+            self.structureTypes[structureType].add(tileKey)
+
+    def __getitem__(self, key):
+        return self.__dict__[key]
+
+    def getCoords(self, featureClass, feature):
+        return self.__dict__[featureClass][feature]
 
     def rotatePiece(self, piece):
         flippedPiece = deepcopy(piece)
@@ -63,22 +81,27 @@ class Board:
             for environment in piece['terrain']:
                 for tile in piece['terrain'][environment]:
                     tile = [tile[0] + vertMultiplier[i]*6, tile[1] + horizMultiplier[i]*6]
-                    tileKey = self.getTileKey(*tile)
+                    tileKey = Hex.getTileKey(*tile)
                     self.tiles[tileKey] = {'terrain': environment}
                     self.tiles[tileKey]['coords'] = tile
-                    self.terrains[environment].append(tileKey)
+                    self.terrains[environment].add(tileKey)
             for territory in piece['territories']:
                 for tile in piece['territories'][territory]:
                     tile = [tile[0] + vertMultiplier[i]*6, tile[1] + horizMultiplier[i]*6]
-                    tileKey = self.getTileKey(*tile)
+                    tileKey = Hex.getTileKey(*tile)
                     self.tiles[tileKey]['territory'] = territory
-                    self.territories[territory].append(tileKey)
+                    self.territories[territory].add(tileKey)
     
-    def getTileKey(self, col, row):
-        return f'{col}-{row}'
+
+
+    def getAllCoords(self):
+        return [[x, y] for x in range(0, 12, 2) for y in range(0, 18, 2)] + [[x, y] for x in range(1, 12, 2) for y in range(1, 18, 2)]
+
+    def getAllKeys(self):
+        return list(map(lambda coords: Hex.getTileKey(*coords), self.getAllCoords()))
 
     def getTile(self, col, row):
-        return self.tiles[self.getTileKey(col, row)]
+        return self.tiles[Hex.getTileKey(col, row)]
 
     def indexToCoords(self, col, row):
         return [self.origin['x'] + (col * self.hexWidth), self.origin['y'] + (row * self.hexHeight)]

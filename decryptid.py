@@ -1,6 +1,7 @@
 from itertools import product
 from Board import Board
 from collections import namedtuple
+from Player import Player
 
 pieces = [
     {}, # There is no piece 0
@@ -172,4 +173,8 @@ if __name__ == '__main__':
         'structures': structures,
         'origin': {'x': 100, 'y': 50}
     })
+    testPlayer = Player('delta', 'blue', test)
+    # print(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', test))
+    print(test.getAllKeys())
+
     test.show()

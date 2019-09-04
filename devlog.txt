@@ -13,4 +13,3 @@ Step 4: Creating a player
         Does the player need to know where its own pieces on the board are (yes: it has to be able to give out non-duplicate information)
         How will the player identify itself? (Color)
         Strategy: asking another player vs investigating a hex (trading your own info for answers from all other players)
-        
