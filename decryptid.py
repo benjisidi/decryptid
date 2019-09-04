@@ -174,7 +174,8 @@ if __name__ == '__main__':
         'origin': {'x': 100, 'y': 50}
     })
     testPlayer = Player('delta', 'blue', test)
-    # print(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', test))
-    print(test.getAllKeys())
-
+    print(
+        len(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', True, test)) +
+        len(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', False, test))
+    )
     test.show()

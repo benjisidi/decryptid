@@ -98,7 +98,7 @@ class Board:
         return [[x, y] for x in range(0, 12, 2) for y in range(0, 18, 2)] + [[x, y] for x in range(1, 12, 2) for y in range(1, 18, 2)]
 
     def getAllKeys(self):
-        return list(map(lambda coords: Hex.getTileKey(*coords), self.getAllCoords()))
+        return set(map(lambda coords: Hex.getTileKey(*coords), self.getAllCoords()))
 
     def getTile(self, col, row):
         return self.tiles[Hex.getTileKey(col, row)]

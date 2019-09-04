@@ -25,7 +25,7 @@ class Player:
         coordList = set()
         for tileKey in board.getCoords(featureClass, feature) :
             for adjacentTileCoords in Hex.getAdjacents(Hex.getTileCoords(tileKey), n):
-                coordList.add(Hex.getTileKey(adjacentTileCoords))
+                coordList.add(Hex.getTileKey(*adjacentTileCoords))
         if (complement):
             allKeys = board.getAllKeys()
             return allKeys - coordList

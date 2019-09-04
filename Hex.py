@@ -23,7 +23,12 @@ def getAllSigns(*arrays):
 
 def getAbsolutes(tileCoords, relativeCoords):
     '''Given a tile and list of relative coordinates, return all valid absolute tile coordinates'''
-    return [[tileCoords[0] + rel[0], tileCoords[1] + rel[1]] for rel in relativeCoords if tileCoords[0] + rel[0] >=0 and tileCoords[1] + rel[1] >=0]
+    return [[tileCoords[0] + rel[0], tileCoords[1] + rel[1]] for rel in relativeCoords if isOnBoard(tileCoords, rel)]
+
+def isOnBoard(tile, relative):
+    x = tile[0] + relative[0]
+    y = tile[1] + relative[1]
+    return x >=0 and x < 12 and y >=0 and y < 18
 
 def getAdjacents(tileCoords, order=1):
     '''Get all order-adjacent tiles'''
