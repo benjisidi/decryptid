@@ -175,7 +175,6 @@ if __name__ == '__main__':
     })
     testPlayer = Player('delta', 'blue', test)
     print(
-        len(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', True, test)) +
-        len(testPlayer.withinNOfFeature(1, 'structureColors', 'blue', False, test))
+        testPlayer.computeClue(test, {'features': {'cougar', 'bear'}, 'complement': False, 'radius': 0, 'featureClass': 'territories'})
     )
     test.show()

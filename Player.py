@@ -1,12 +1,11 @@
 import Hex
+from operator import itemgetter
+
 class Player:
     clues = {}
     def __init__(self, color, clue, board):
         self.color = color
         self.clue = clue
-    
-    def computeClue(self, board, clue):
-        pass
     
     def updateBoard(self, board):
         self.board = board
@@ -20,13 +19,19 @@ class Player:
     def getOwnPossible(self):
         return self.computeClue(self.clue)
 
-    # ToDo: Add complement (¬) argument and use board.getAllKeys() to get
-    def withinNOfFeature(self, n, featureClass, feature, complement, board):
+    def withinNOfFeature(self, n, featureClass, features, complement, board):
         coordList = set()
-        for tileKey in board.getCoords(featureClass, feature) :
-            for adjacentTileCoords in Hex.getAdjacents(Hex.getTileCoords(tileKey), n):
-                coordList.add(Hex.getTileKey(*adjacentTileCoords))
+        for feature in features:
+            for tileKey in board.getCoords(featureClass, feature) :
+                for adjacentTileCoords in Hex.getAdjacents(Hex.getTileCoords(tileKey), n):
+                    coordList.add(Hex.getTileKey(*adjacentTileCoords))
         if (complement):
             allKeys = board.getAllKeys()
             return allKeys - coordList
         return coordList
+
+    def computeClue(self, board, clue):
+        featureClass, features, radius, complement = itemgetter('featureClass', 'features', 'radius', 'complement')(clue)
+        possibleSquares = self.withinNOfFeature(radius, featureClass, features, complement, board)
+        return possibleSquares
+
